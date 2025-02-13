@@ -1,17 +1,60 @@
 package org.example;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.util.List;
+import java.util.Scanner;
+import org.example.model.ProdutoModel;
+import org.example.service.ProdutoService;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        ProdutoService produtoService = new ProdutoService();
+        Scanner scanner = new Scanner(System.in); int opcao = 0;
+        do {
+            System.out.println("----- Gerenciamento de Produtos -----");
+            System.out.println("1 - Cadastrar Produto");
+            System.out.println("2 - Listar Produtos");
+            System.out.println("3 - Listar Produto pelo ID");
+            System.out.println("0 - Sair");
+            System.out.print("Escolha uma opção: ");
+            opcao = scanner.nextInt();
+            switch (opcao) {
+                case 1:
+                    System.out.print("Digite o ID do produto: ");
+                    int id = scanner.nextInt();
+                    scanner.nextLine(); // Consumir a quebra de linha
+                    System.out.print("Digite o nome do produto: ");
+                    String nome = scanner.nextLine();
+                    System.out.print("Digite o preço do produto: ");
+                    double preco = scanner.nextDouble();
+                    ProdutoModel produto = new ProdutoModel(id, nome, preco);
+                    produtoService.salvar(produto);
+                    System.out.println("Produto cadastrado com sucesso.");
+                    break;
+                case 2:
+                    List<ProdutoModel> produtos = produtoService.buscarTodos();
+                    System.out.println("----- Lista de Produtos -----");
+                    for (ProdutoModel p : produtos) {
+                        System.out.println(p);
+                    }
+                    break;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+                case 3:
+                    System.out.print("Digite o ID do produto: ");
+                    Long idProduto = scanner.nextLong();
+                    scanner.nextLine();
+                    ProdutoModel produtoPesquisado = produtoService.buscarPorId(idProduto);
+                    System.out.println("----- Produto Pesquisado -----");
+                    System.out.println(produtoPesquisado);
+                    break;
+
+                case 0:
+                    System.out.println("Encerrando o sistema.");
+                    break;
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
+            }
+            System.out.println();
+        } while (opcao != 0);
+        scanner.close();
     }
 }
